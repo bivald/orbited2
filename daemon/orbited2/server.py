@@ -23,13 +23,22 @@ class OrbitedServer(object):
                 wsgi_app['/ws'] = eventlet.websocket.WebSocketWSGI(self._wsgi_websocket)
             if 'csp' in rule.protocols:
                 wsgi_app['/csp'] = self._csp_sock
-            self._wsgi_apps[(rule.interface, rule.port)] = wsgi_app
+            self._wsgi_apps[(rule.interface, rule.port, rule.ssl, rule.certfile, rule.keyfile)] = wsgi_app
 
 
     def run(self):
-        for (iface, port), app in self._wsgi_apps.items():
-            print "Orbited listening on http://%s:%s" % (iface or "0.0.0.0", port)
-            eventlet.spawn(eventlet.wsgi.server, eventlet.listen((iface,port)), app, log=EmptyLogShim())
+        for (iface, port, ssl, certfile, keyfile), app in self._wsgi_apps.items():
+            if ssl == 1:
+                print "Orbited listening on https://%s:%s using cert: %s and key: %s" % (iface or "0.0.0.0", port, certfile, keyfile)
+                eventlet.spawn(eventlet.wsgi.server, eventlet.wrap_ssl(eventlet.listen((iface, port)),
+                                              certfile=certfile,
+                                              keyfile=keyfile,
+                                              server_side=True), app, log=EmptyLogShim())
+            else:
+                print "Orbited listening on http://%s:%s" % (iface or "0.0.0.0", port)
+                eventlet.spawn(eventlet.wsgi.server, eventlet.listen((iface,port)), app, log=EmptyLogShim())
+            
+            
         ev = eventlet.event.Event()        
         eventlet.spawn(self._run, ev)
         return ev

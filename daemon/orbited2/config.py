@@ -53,7 +53,10 @@ class Listen(ConfigBase):
     def __init__(self,
         port=8000,
         protocols=['ws', 'csp'],
-        interface='127.0.0.1'
+        interface='127.0.0.1',
+        ssl=0,
+        certfile='',
+        keyfile=''
     ):
         ConfigBase.__init__(self)
         if not isinstance(port, int):
@@ -67,6 +70,9 @@ class Listen(ConfigBase):
         self.port = port
         self.protocols = protocols
         self.interface=interface
+        self.ssl = ssl
+        self.certfile = certfile
+        self.keyfile = keyfile
         
 class RemoteDestination(ConfigBase):
     def __init__(self, 
