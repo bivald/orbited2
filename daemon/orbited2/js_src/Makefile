@@ -1,10 +1,10 @@
 all: debug
 
 debug:
-	jsio_compile Orbited2.pkg -j jsio-3.3alpha -o ../static/Orbited2.js -d
+	jsio compile Orbited2.pkg -o ../static/Orbited2.js -d
 
 release:
-	jsio_compile Orbited2.pkg -j jsio-3.3alpha -o ../static/Orbited2.min.js -g --closure ./closure.jar
+	jsio compile Orbited2.pkg -o ../static/Orbited2.min.js -g --closure ./closure.jar
 	cp ../static/Orbited2.min.js ../static/Orbited2.min.js.bak
 	rm ../static/Orbited2.min.js.gz
 	gzip ../static/Orbited2.min.js

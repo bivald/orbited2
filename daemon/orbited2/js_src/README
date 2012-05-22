@@ -10,3 +10,9 @@ To release:
 Default:
 
    `make` with no arguments is the same as `make debug`
+
+Compiling Orbited2.js:
+
+	1. Check out js.io https://github.com/gameclosure/js.io
+	2. Make a symlink from js.io/jsio to /usr/bin/jsio
+	3. Use the make targets from above

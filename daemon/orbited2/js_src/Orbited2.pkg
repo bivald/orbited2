@@ -1,5 +1,5 @@
 {
-    "root": "Orbited2",
+    "root": "./Orbited2",
     "externalName": "Orbited2",
     "transports": ["csp", "websocket"],
     "environments": ["browser"],
