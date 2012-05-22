@@ -275,7 +275,7 @@ var count = 0;
 
 function getMultiplexer(baseUri, forceTransport) {
 	logger.debug('getMultiplexer', baseUri, forceTransport);
-	if (!multiplexer) {
+	if (!multiplexer || multiplexer['url'] == null) {
 		multiplexer = new OrbitedMultiplexingProtocol(baseUri);
 		multiplexer.onClose = function() {
 			multiplexer = null;
@@ -471,3 +471,5 @@ var OrbitedMultiplexingProtocol = Class(BufferedProtocol, function(supr) {
 		}
 	}
 });
+
+Orbited2 = exports
