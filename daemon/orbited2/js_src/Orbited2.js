@@ -8,7 +8,7 @@ jsio('import lib.Enum as Enum');
 exports.logging = logging;
 exports.logger = logger;
 
-//logger.setLevel(0)
+logger.setLevel(0)
 
 var originalWebSocket = window.WebSocket;
 
@@ -291,7 +291,7 @@ function getMultiplexer(baseUri, forceTransport) {
 			case 'ws':
 				var uri = new Uri(baseUri);
 				uri.setProtocol('ws');
-				var url = uri.render() + 'ws';
+				var url = uri.toString() + 'ws';
 				logger.debug('connecting with ws')
 				net.connect(multiplexer, 'websocket', { url: url, wsConstructor: originalWebSocket });
 				multiplexer.connectionLost = bind(multiplexer, '_connectionLost', 'websocket');
@@ -333,7 +333,7 @@ var Connection = Class(function() {
 	}
 	
 	this.send = function(data) {
-		this._id = id;
+		// this._id = id; 
 		this._multiplexer.sendFrame(this._id, FRAME.DATA, data);
 	}
 	this.close = function() {
