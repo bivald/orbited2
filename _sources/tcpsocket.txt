@@ -1,0 +1,83 @@
+=============
+TCP Socket
+=============
+
+Orbited has two main functions: cross-browser web socket and TCP socket. TCP Socket is a bridge between the browser (javascript) and a TCP service on the other side of Orbited (this can be a STOMP service, IRC service, your own TCP service etc.). 
+
+Overview
+========
+
+.. sourcecode:: javascript
+
+    var sock = new Orbited2.TCPSocket({ orbitedUri: "http://127.0.0.1:8000", forceTransport: "csp" })
+    sock.open("irc.freenode.org", 6667);
+    sock.onopen = function() { 
+        sock.send('NICK mcarter\r\n');
+    }
+    //etc
+
+If we break it down:
+
+.. sourcecode:: javascript
+
+    var sock = new Orbited2.TCPSocket({ orbitedUri: "http://127.0.0.1:8000", forceTransport: "csp" })
+
+This creates a new Orbited2 TCPSocket. Options:
+
+.. sourcecode:: javascript
+
+    { 
+      orbitedUri: "http://127.0.0.1:8000",
+      forceTransport: "csp"
+    }
+
+orbitedUri: URI and port to orbited. This can be either HTTP or (experimental) HTTPs
+forceTransport: Should orbited let the browser choose the best transport (using websockets if possible, or old-school "csp"). Currently there are know issues with the ws protocol, thus we recommend using "csp". 
+
+.. sourcecode:: javascript
+
+    sock.open("irc.freenode.org", 6667);
+
+Parameters are:
+
+    sock.open(server_adress, server_port, binary_protocol);
+
+server_adress: The address for Orbited to connect to
+server_port: The port for Orbited to connect to 
+binary_protocol: Is the data binary or text? If you plan to send binary data such as images over Orbited, this should be set to true. If you plan to only send text (as in when connecting to an irc server) binary should be set to false. 
+
+Also, when set to binary Orbited does not handle string encoding at all. It's worth noting here that browsers do not use UTF-8 internally, but UTF-16. So if you plan to use binary protocol, unless you want utf-16, we recommend you to decode to utf-8 before sending it via the socket (sock.send). How to do this can be read on https://gist.github.com/2780226 (thanks to Philip Bennefall for pointing this out)
+
+.. sourcecode:: javascript
+
+    sock.onopen = function() { 
+       // handle server connects here
+    }
+
+onopen is called when the server has established the connection to the end remote service. If connecting to an IRC server, this would be the right time to send the initial commands (such as NICK, USER etc.). Remember, if your server is a line-separated protocol such as IRC, you need to send  "\n" at the end. 
+
+.. sourcecode:: javascript
+
+    sock.onclose = function() { 
+       // handle server disconnects here, triggered by a variety of reasons (remote server closed the connection, pinged out, etc. )
+    }
+
+.. sourcecode:: javascript
+
+    sock.onread = function(data)
+    {
+       // handle server data here
+    }
+
+
+.. sourcecode:: javascript
+
+    sock.send(data)
+
+Remember, when sock.open is set to binary Orbited does not handle string encoding at all. It's worth noting here that browsers do not use UTF-8 internally, but UTF-16. So if you plan to use binary protocol, unless you want utf-16, we recommend you to decode to utf-8 before sending it via the socket (sock.send). How to do this can be read on https://gist.github.com/2780226 (thanks to Philip Bennefall for pointing this out)
+
+.. sourcecode:: javascript
+
+    sock.close()
+
+Closes the socket. Will trigger .onclose()
