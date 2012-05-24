@@ -15,3 +15,4 @@ Contents:
    configuration
    deployment
    compilation
+   tcpsocket

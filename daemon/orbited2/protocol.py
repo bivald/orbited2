@@ -406,3 +406,8 @@ class WebSocket76Protocol(WebSocket75Protocol):
         self._buf = buf[16:]
     def close(self, sock):
         sock.sendall(self.pack_message(""))
+
+class Monitoring(object):
+    def __new__(self, env, start_response):
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return ['Hello, World!\r\n']

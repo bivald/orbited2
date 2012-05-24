@@ -3,7 +3,7 @@ import logging
 import sys
 from collections import defaultdict
 
-ALLOWED_INCOMING_PROTOCOLS = [ 'ws', 'csp' ]
+ALLOWED_INCOMING_PROTOCOLS = [ 'ws', 'csp', 'monitor' ]
 
 ALLOWED_REMOTE_PROTOCOLS = [ 'ws/hixie75', 'ws/hixie76', 'tcp' ]
 

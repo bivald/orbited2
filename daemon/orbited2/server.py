@@ -7,7 +7,6 @@ import static
 from paste.urlmap import URLMap
 
 class OrbitedServer(object):
-
     def __init__(self, config):
         self._config = config
         self._csp_sock = csp_eventlet.Listener()
@@ -23,6 +22,8 @@ class OrbitedServer(object):
                 wsgi_app['/ws'] = eventlet.websocket.WebSocketWSGI(self._wsgi_websocket)
             if 'csp' in rule.protocols:
                 wsgi_app['/csp'] = self._csp_sock
+            if 'monitor' in rule.protocols:
+                wsgi_app['/monitor'] = protocol.Monitoring
             self._wsgi_apps[(rule.interface, rule.port, rule.ssl, rule.certfile, rule.keyfile)] = wsgi_app
 
 
