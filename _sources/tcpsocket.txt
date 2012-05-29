@@ -24,6 +24,7 @@ If we break it down:
 
 This creates a new Orbited2 TCPSocket. Options:
 
+
 .. sourcecode:: javascript
 
     { 
