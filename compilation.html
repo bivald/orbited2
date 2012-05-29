@@ -110,7 +110,11 @@
     <div id="docs-sidebar">
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Compilation</a></li>
+<li><a class="reference internal" href="#">Compilation</a><ul>
+<li><a class="reference internal" href="#orbited-js">Orbited.js</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
 </ul>
 
 
@@ -139,6 +143,8 @@
         
 <div class="section" id="compilation">
 <h1>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="orbited-js">
+<h2>Orbited.js<a class="headerlink" href="#orbited-js" title="Permalink to this headline">¶</a></h2>
 <p>Curious users may wish to modify the source code and recompile Orbited2. Here&#8217;s how, courtesy of Niklas.</p>
 <ol class="arabic simple">
 <li>Check-out js.io from github (<a class="reference external" href="https://github.com/gameclosure/js.io">https://github.com/gameclosure/js.io</a>)</li>
@@ -161,6 +167,32 @@
 <ol class="arabic simple" start="5">
 <li>You&#8217;re done. Celebrate!</li>
 </ol>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Orbited2s documentation is built using Sphinx (<a class="reference external" href="http://sphinx.pocoo.org/">http://sphinx.pocoo.org/</a>). If you have easy_install, install it:</p>
+<div class="highlight-none"><div class="highlight"><pre>easy_install -U Sphinx</pre></div>
+</div>
+<p>If you don&#8217;t have easy_install, install from <a class="reference external" href="http://pypi.python.org/pypi/Sphinx">http://pypi.python.org/pypi/Sphinx</a></p>
+<p>We also require Mako template engine (<a class="reference external" href="http://www.makotemplates.org/">http://www.makotemplates.org/</a>), install it with:</p>
+<div class="highlight-none"><div class="highlight"><pre>pip install -U mako</pre></div>
+</div>
+<p>If you don&#8217;t have pip, install from <a class="reference external" href="http://www.makotemplates.org/download.html">http://www.makotemplates.org/download.html</a></p>
+<p>Orbite2s documentation consists of a series of .rst (reStructuredText) files, you can read more about it&#8217;s syntax on <a class="reference external" href="http://sphinx.pocoo.org/rest.html">http://sphinx.pocoo.org/rest.html</a></p>
+<p>It&#8217;s fairly straight forward and you can use the other parts of documentation as a starting point.</p>
+<p>When you&#8217;r done, compile the new files:</p>
+<blockquote>
+<div><div class="highlight-none"><div class="highlight"><pre>cd docs
+make html</pre></div>
+</div>
+</div></blockquote>
+<p>Which should end with:</p>
+<div class="highlight-none"><div class="highlight"><pre>build succeeded, 1 warning.
+
+Build finished. The HTML pages are in build/html.</pre></div>
+</div>
+<p>And then the freshly baked documentation is available in build/html</p>
+</div>
 </div>
 
     </div>
