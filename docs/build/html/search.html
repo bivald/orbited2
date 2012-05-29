@@ -1,177 +1,149 @@
-
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
-<head>
-    <title>Mako Runtime Error</title>
-    <style>
-        body { font-family:verdana; margin:10px 30px 10px 30px;}
-        .stacktrace { margin:5px 5px 5px 5px; }
-        .highlight { padding:0px 10px 0px 10px; background-color:#9F9FDF; }
-        .nonhighlight { padding:0px; background-color:#DFDFDF; }
-        .sample { padding:10px; margin:10px 10px 10px 10px;
-                  font-family:monospace; }
-        .sampleline { padding:0px 10px 0px 10px; }
-        .sourceline { margin:5px 5px 10px 5px; font-family:monospace;}
-        .location { font-size:80%; }
-        .highlight { white-space:pre; }
-        .sampleline { white-space:pre; }
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        
+        <title>
+            
+    
+    Search
+ &mdash; 
+    orbited2 0.2.0 documentation
 
-        .syntax-highlighted .hll { background-color: #ffffcc }
-.syntax-highlighted  { background: #f8f8f8; }
-.syntax-highlighted .c { color: #408080; font-style: italic } /* Comment */
-.syntax-highlighted .err { border: 1px solid #FF0000 } /* Error */
-.syntax-highlighted .k { color: #008000; font-weight: bold } /* Keyword */
-.syntax-highlighted .o { color: #666666 } /* Operator */
-.syntax-highlighted .cm { color: #408080; font-style: italic } /* Comment.Multiline */
-.syntax-highlighted .cp { color: #BC7A00 } /* Comment.Preproc */
-.syntax-highlighted .c1 { color: #408080; font-style: italic } /* Comment.Single */
-.syntax-highlighted .cs { color: #408080; font-style: italic } /* Comment.Special */
-.syntax-highlighted .gd { color: #A00000 } /* Generic.Deleted */
-.syntax-highlighted .ge { font-style: italic } /* Generic.Emph */
-.syntax-highlighted .gr { color: #FF0000 } /* Generic.Error */
-.syntax-highlighted .gh { color: #000080; font-weight: bold } /* Generic.Heading */
-.syntax-highlighted .gi { color: #00A000 } /* Generic.Inserted */
-.syntax-highlighted .go { color: #808080 } /* Generic.Output */
-.syntax-highlighted .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-.syntax-highlighted .gs { font-weight: bold } /* Generic.Strong */
-.syntax-highlighted .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.syntax-highlighted .gt { color: #0040D0 } /* Generic.Traceback */
-.syntax-highlighted .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-.syntax-highlighted .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-.syntax-highlighted .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-.syntax-highlighted .kp { color: #008000 } /* Keyword.Pseudo */
-.syntax-highlighted .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-.syntax-highlighted .kt { color: #B00040 } /* Keyword.Type */
-.syntax-highlighted .m { color: #666666 } /* Literal.Number */
-.syntax-highlighted .s { color: #BA2121 } /* Literal.String */
-.syntax-highlighted .na { color: #7D9029 } /* Name.Attribute */
-.syntax-highlighted .nb { color: #008000 } /* Name.Builtin */
-.syntax-highlighted .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.syntax-highlighted .no { color: #880000 } /* Name.Constant */
-.syntax-highlighted .nd { color: #AA22FF } /* Name.Decorator */
-.syntax-highlighted .ni { color: #999999; font-weight: bold } /* Name.Entity */
-.syntax-highlighted .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-.syntax-highlighted .nf { color: #0000FF } /* Name.Function */
-.syntax-highlighted .nl { color: #A0A000 } /* Name.Label */
-.syntax-highlighted .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-.syntax-highlighted .nt { color: #008000; font-weight: bold } /* Name.Tag */
-.syntax-highlighted .nv { color: #19177C } /* Name.Variable */
-.syntax-highlighted .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.syntax-highlighted .w { color: #bbbbbb } /* Text.Whitespace */
-.syntax-highlighted .mf { color: #666666 } /* Literal.Number.Float */
-.syntax-highlighted .mh { color: #666666 } /* Literal.Number.Hex */
-.syntax-highlighted .mi { color: #666666 } /* Literal.Number.Integer */
-.syntax-highlighted .mo { color: #666666 } /* Literal.Number.Oct */
-.syntax-highlighted .sb { color: #BA2121 } /* Literal.String.Backtick */
-.syntax-highlighted .sc { color: #BA2121 } /* Literal.String.Char */
-.syntax-highlighted .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-.syntax-highlighted .s2 { color: #BA2121 } /* Literal.String.Double */
-.syntax-highlighted .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-.syntax-highlighted .sh { color: #BA2121 } /* Literal.String.Heredoc */
-.syntax-highlighted .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-.syntax-highlighted .sx { color: #008000 } /* Literal.String.Other */
-.syntax-highlighted .sr { color: #BB6688 } /* Literal.String.Regex */
-.syntax-highlighted .s1 { color: #BA2121 } /* Literal.String.Single */
-.syntax-highlighted .ss { color: #19177C } /* Literal.String.Symbol */
-.syntax-highlighted .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.syntax-highlighted .vc { color: #19177C } /* Name.Variable.Class */
-.syntax-highlighted .vg { color: #19177C } /* Name.Variable.Global */
-.syntax-highlighted .vi { color: #19177C } /* Name.Variable.Instance */
-.syntax-highlighted .il { color: #666666 } /* Literal.Number.Integer.Long */
-        .linenos { min-width: 2.5em; text-align: right; }
-        pre { margin: 0; }
-        .syntax-highlighted { padding: 0 10px; }
-        .syntax-highlightedtable { border-spacing: 1px; }
-        .nonhighlight { border-top: 1px solid #DFDFDF;
-                        border-bottom: 1px solid #DFDFDF; }
-        .stacktrace .nonhighlight { margin: 5px 15px 10px; }
-        .sourceline { margin: 0 0; font-family:monospace; }
-        .code { background-color: #F8F8F8; width: 100%; }
-        .error .code { background-color: #FFBDBD; }
-        .error .syntax-highlighted { background-color: #FFBDBD; }
+        </title>
+        
+    
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/docs.css" type="text/css" />
 
-    </style>
-</head>
-<body>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+          URL_ROOT:    '#',
+          VERSION:     '0.2.0',
+          COLLAPSE_MODINDEX: false,
+          FILE_SUFFIX: '.html'
+      };
+    </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/searchtools.js"></script>
+    <script type="text/javascript" src="_static/init.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="#" />
+    <link rel="top" title="orbited2 0.2.0 documentation" href="index.html" />
 
-<h2>Error !</h2>
+    <script type="text/javascript">
+        jQuery(function() { Search.loadIndex("searchindex.js"); });
+    </script>
 
-<h3>TypeError: &#39;Undefined&#39; object is not callable</h3>
+    </head>
+    <body>
+        
 
-    <div class="sample">
-    <div class="nonhighlight">
-    
-        <table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>3</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="x">&lt;%!</span>
-</pre></div>
-</td></tr></table>
-    
-        <table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>4</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="x">    local_script_files = [&#39;_static/searchtools.js&#39;]</span>
-</pre></div>
-</td></tr></table>
-    
-        <table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>5</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="cp">%</span><span class="o">&gt;</span><span class="x"></span>
-</pre></div>
-</td></tr></table>
-    
-    
-        <table class="error syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>6</pre></div></td><td class="code"><div class="error syntax-highlighted"><pre><span class="cp">&lt;%</span><span class="nb">def</span> <span class="na">name=</span><span class="s">&quot;show_title()&quot;</span><span class="cp">&gt;${</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Search&#39;</span><span class="p">)</span><span class="cp">}&lt;/%</span><span class="nb">def</span><span class="cp">&gt;</span><span class="x"></span>
-</pre></div>
-</td></tr></table>
-    
-    
-        <table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>7</pre></div></td><td class="code"><div class="syntax-highlighted"><pre>
-</pre></div>
-</td></tr></table>
-    
-        <table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>8</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="x">&lt;div id=&quot;searchform&quot;&gt;</span>
-</pre></div>
-</td></tr></table>
-    
-        <table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>9</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="x">&lt;h3&gt;Enter Search Terms:&lt;/h3&gt;</span>
-</pre></div>
-</td></tr></table>
-    
-        <table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>10</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="x">&lt;form class=&quot;search&quot; action=&quot;</span><span class="cp">${</span><span class="n">pathto</span><span class="p">(</span><span class="s">&#39;search&#39;</span><span class="p">)</span><span class="cp">}</span><span class="x">&quot; method=&quot;get&quot;&gt;</span>
-</pre></div>
-</td></tr></table>
-    
-        <table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>11</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="x">  &lt;input type=&quot;text&quot; name=&quot;q&quot; size=&quot;18&quot; /&gt; &lt;input type=&quot;submit&quot; value=&quot;</span><span class="cp">${</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Search&#39;</span><span class="p">)</span><span class="cp">}</span><span class="x">&quot; /&gt;</span>
-</pre></div>
-</td></tr></table>
-    </div>
+
+
+
+
+
+
+
+
+
+<div id="docs-container">
+
+
+
+<div id="docs-header">
+    <h1>orbited2 0.2.0 documentation</h1>
+
+    <div id="docs-search">
+    Search:
+    <form class="search" action="#" method="get">
+      <input type="text" name="q" size="18" /> <input type="submit" value="Search" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
     </div>
 
-<div class="stacktrace">
-    <div class="location">/home/niklas/orbited2/docs/source/_templates/search.mako, line 6:</div>
-    <div class="nonhighlight">
-    
-      <div class="sourceline"><table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>6</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="o">&lt;%</span><span class="k">def</span> <span class="nf">name</span><span class="o">=</span><span class="s">&quot;show_title()&quot;</span><span class="o">&gt;</span><span class="err">$</span><span class="p">{</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;Search&#39;</span><span class="p">)}</span><span class="o">&lt;/%</span><span class="n">def</span><span class="o">&gt;</span>
-</pre></div>
-</td></tr></table></div>
+    <div id="docs-version-header">
+        Release: <span class="version-num">0.2.0</span> | Release Date: 
+
+
     </div>
-    <div class="location">/usr/lib/python2.5/site-packages/mako/runtime.py, line 656:</div>
-    <div class="nonhighlight">
-    
-      <div class="sourceline"><table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>656</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="n">callable_</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</td></tr></table></div>
+
+</div>
+
+<div id="docs-top-navigation">
+    <div id="docs-top-page-control" class="docs-navigation-links">
+        <ul>
+
+        <li>
+            <a href="contents.html">Table of Contents</a> |
+            <a href="genindex.html">Index</a>
+        </li>
+        </ul>
     </div>
-    <div class="location">/home/niklas/orbited2/docs/source/_templates/static_base.mako, line 8:</div>
-    <div class="nonhighlight">
-    
-      <div class="sourceline"><table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>8</pre></div></td><td class="code"><div class="syntax-highlighted"><pre>        <span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;</span><span class="err">$</span><span class="p">{</span><span class="n">capture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_title</span><span class="p">)</span><span class="o">|</span><span class="n">util</span><span class="o">.</span><span class="n">striptags</span><span class="p">}</span> <span class="o">&amp;</span><span class="n">mdash</span><span class="p">;</span> <span class="err">$</span><span class="p">{</span><span class="n">docstitle</span><span class="o">|</span><span class="n">h</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
-</pre></div>
-</td></tr></table></div>
+
+    <div id="docs-navigation-banner">
+        <a href="index.html">orbited2 0.2.0 documentation</a>
+        » 
+    Search
+ 
+
+        <h2>
+            
+    Search
+
+        </h2>
     </div>
-    <div class="location">/usr/lib/python2.5/site-packages/mako/runtime.py, line 815:</div>
-    <div class="nonhighlight">
-    
-      <div class="sourceline"><table class="syntax-highlightedtable"><tr><td class="linenos"><div class="linenodiv"><pre>815</pre></div></td><td class="code"><div class="syntax-highlighted"><pre><span class="n">callable_</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</td></tr></table></div>
+
+</div>
+
+<div id="docs-body-container">
+
+
+    <div id="docs-body" class="" >
+        
+
+
+
+
+
+
+<div id="searchform">
+<h3>Enter Search Terms:</h3>
+<form class="search" action="#" method="get">
+  <input type="text" name="q" size="18" /> <input type="submit" value="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+</div>
+
+<div id="search-results"></div>
+
+
+
+    </div>
+
+</div>
+
+<div id="docs-bottom-navigation" class="docs-navigation-links">
+
+    <div id="docs-copyright">
+        &copy; Copyright 2012, Michael Carter.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
 </div>
 
-</body>
+</div>
+
+        
+    
+
+    </body>
 </html>
+
+

@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.abspath('.'))
 extensions = ['sphinx.ext.todo', 'sphinx.ext.pngmath', 'builder.builders']
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = [os.path.abspath('_templates')]
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -40,7 +40,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'orbited2'
-copyright = u'2010, Michael Carter'
+copyright = u'2012, Michael Carter'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
