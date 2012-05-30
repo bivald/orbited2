@@ -29,11 +29,25 @@ This creates a new Orbited2 TCPSocket. Options:
 
     { 
       orbitedUri: "http://127.0.0.1:8000",
-      forceTransport: "csp"
+      forceTransport: "csp",
+      browserLogLevel: 4
     }
 
 orbitedUri: URI and port to orbited. This can be either HTTP or (experimental) HTTPs
-forceTransport: Should orbited let the browser choose the best transport (using websockets if possible, or old-school "csp"). Currently there are know issues with the ws protocol, thus we recommend using "csp". 
+forceTransport: Should orbited let the browser choose the best transport (using websockets if possible, or old-school "csp"). Currently there are known issues with the ws protocol, thus we recommend using "csp". 
+browserLogLevel: What log level to use in the clients browser. The log is printed in real-time to console.log. Orbited2 supports the following browser log levels:
+
+.. sourcecode:: javascript
+
+    var logging = {
+		DEBUG: 1,
+		LOG: 2,
+		INFO: 3,
+		WARN: 4,
+		ERROR: 5
+	},
+	
+	from https://github.com/gameclosure/js.io/blob/b26156c11d9b97cc911a017033c3758d20cfcc12/packages/base.js#L143
 
 .. sourcecode:: javascript
 
@@ -41,13 +55,13 @@ forceTransport: Should orbited let the browser choose the best transport (using 
 
 Parameters are:
 
-    sock.open(server_adress, server_port, binary_protocol);
+    sock.open(server_address, server_port, binary_protocol);
 
-server_adress: The address for Orbited to connect to
+server_address: The address for Orbited to connect to
 server_port: The port for Orbited to connect to 
 binary_protocol: Is the data binary or text? If you plan to send binary data such as images over Orbited, this should be set to true. If you plan to only send text (as in when connecting to an irc server) binary should be set to false. 
 
-Also, when set to binary Orbited does not handle string encoding at all. It's worth noting here that browsers do not use UTF-8 internally, but UTF-16. So if you plan to use binary protocol, unless you want utf-16, we recommend you to decode to utf-8 before sending it via the socket (sock.send). How to do this can be read on https://gist.github.com/2780226 (thanks to Philip Bennefall for pointing this out)
+Also, when set to binary Orbited does not handle string encoding at all. It's worth noting here that browsers do not use UTF-8 internally, but UTF-16. If you plan to send binary data, unless you want UTF-16 for any reason, we recommend that you encode text strings from UTF-16 to UTF-8 before sending them using the send method of the socket class. You may read more about this on https://gist.github.com/2780226 (thanks to Philip Bennefall for pointing this out)
 
 .. sourcecode:: javascript
 
@@ -75,7 +89,7 @@ onopen is called when the server has established the connection to the end remot
 
     sock.send(data)
 
-Remember, when sock.open is set to binary Orbited does not handle string encoding at all. It's worth noting here that browsers do not use UTF-8 internally, but UTF-16. So if you plan to use binary protocol, unless you want utf-16, we recommend you to decode to utf-8 before sending it via the socket (sock.send). How to do this can be read on https://gist.github.com/2780226 (thanks to Philip Bennefall for pointing this out)
+Remember, when sock.open is set to binary Orbited does not handle string encoding at all. It's worth noting here that browsers do not use UTF-8 internally, but UTF-16. If you plan to send binary data, unless you want UTF-16 for any reason, we recommend that you encode text strings from UTF-16 to UTF-8 before sending them using the send method of the socket class. You may read more about this on https://gist.github.com/2780226 (thanks to Philip Bennefall for pointing this out)
 
 .. sourcecode:: javascript
 
