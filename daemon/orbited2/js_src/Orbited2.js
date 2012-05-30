@@ -8,14 +8,10 @@ jsio('import lib.Enum as Enum');
 exports.logging = logging;
 exports.logger = logger;
 
-logger.setLevel(0)
-
 var originalWebSocket = window.WebSocket;
-
-
 var baseUri = new Uri(window.location);
-
 var defaultOrbitedUri;
+var defaultBrowserLogLevel = 4;
 
 function setup() {
 	var scripts = document.getElementsByTagName('script'),
@@ -52,12 +48,14 @@ exports.TCPSocket = Class(function() {
 	
 	this.init = function(opts) {
 		this._orbitedUri  = opts.orbitedUri || defaultOrbitedUri;
+		this._orbitedBrowserLogLevel = opts.browserLogLevel || defaultBrowserLogLevel;
 		if (!/\/$/.test(this._orbitedUri)) {
 			this._orbitedUri += '/';
 		}
 		this.readyState = READY_STATE.WAITING;
 		this._buffer = "";
 		this._forceTransport = opts.forceTransport;
+		logger.setLevel( this._orbitedBrowserLogLevel )
 	}
 	
 	this.open = function(host, port, isBinary) {

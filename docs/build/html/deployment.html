@@ -110,7 +110,12 @@
     <div id="docs-sidebar">
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Deployment</a></li>
+<li><a class="reference internal" href="#">Deployment</a><ul>
+<li><a class="reference internal" href="#screen">Screen</a></li>
+<li><a class="reference internal" href="#nohup">Nohup</a></li>
+<li><a class="reference internal" href="#cronjob">Cronjob</a></li>
+</ul>
+</li>
 </ul>
 
 
@@ -140,7 +145,41 @@
 <div class="section" id="deployment">
 <h1>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h1>
 <p>Orbited2 takes a single command line argument, -c (or &#8211;config) and the file location of your config file. The default is orbited2.cfg. Thus, deployment consists of creating a suitable orbited2.cfg and typing:</p>
-<div class="highlight-none"><div class="highlight"><pre># orbited2</pre></div>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">orbited2</span></pre></div>
+</div>
+<p>Orbited2 itself has no daemon mode (i.e you can&#8217;t add a &#8211;daemon line and it will run automatically in the background).</p>
+<div class="section" id="screen">
+<h2>Screen<a class="headerlink" href="#screen" title="Permalink to this headline">¶</a></h2>
+<p>There are various of ways of running orbited2 in the background. If you want to be able to easily view possible messages and errors use screen. Screen allows you to attach and detach a shell without closing the running applications. You can learn more about screen on <a class="reference external" href="http://www.gnu.org/software/screen/">http://www.gnu.org/software/screen/</a> and <a class="reference external" href="http://www.kuro5hin.org/story/2004/3/9/16838/14935">http://www.kuro5hin.org/story/2004/3/9/16838/14935</a>. It&#8217;s usually installed via your package repository (such as yum, apt-get, .rpm files etc.). To launch orbited using screen:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">screen</span>
+<span class="go">orbited2</span></pre></div>
+</div>
+<p>Then detach the screen C-a d (ctrl + a + d). The screen can then be found and reattached using:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">screen -ls</span>
+<span class="go">There are screens on:</span>
+<span class="go">24673.pts-3.hostname        (05/30/2012 11:25:55 AM)        (Detached)</span>
+
+<span class="go">screen -r 24673.pts-3.hostname</span></pre></div>
+</div>
+</div>
+<div class="section" id="nohup">
+<h2>Nohup<a class="headerlink" href="#nohup" title="Permalink to this headline">¶</a></h2>
+<p>Nohup is a linux command &#8220;enabling the [your] command to keep running after the user who issues the command has logged out&#8221; (<a class="reference external" href="http://en.wikipedia.org/wiki/Nohup">http://en.wikipedia.org/wiki/Nohup</a>)</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">nohup orbited2 &amp;&gt; /home/user/path/orbited2.log &amp;</span></pre></div>
+</div>
+<p>The &amp; at the end detaches the script from the current shell.</p>
+</div>
+<div class="section" id="cronjob">
+<h2>Cronjob<a class="headerlink" href="#cronjob" title="Permalink to this headline">¶</a></h2>
+<p>Below is a very simply cronjob to make sure Orbited2 is running (and is started if it isn&#8217;t).</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">#!/bin/bash</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="sb">`</span>ps ax|grep orbited2|grep python|wc -l<span class="sb">`</span> <span class="o">=</span> 0 <span class="o">]</span>
+<span class="k">then</span>
+<span class="k">        </span>nohup orbited2 &amp;&gt; /home/user/path/orbited2.log &amp;
+<span class="k">fi</span></pre></div>
+</div>
+<p>It&#8217;s a very rudimentary script, but does it&#8217;s job. Remember if you have Orbited2 running on privileged ports (i.e port 80/443) the cronjob need to be run as root.</p>
 </div>
 </div>
 
