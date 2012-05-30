@@ -46,14 +46,16 @@ browserLogLevel: What log level to use in the clients browser. The log is printe
 		WARN: 4,
 		ERROR: 5
 	},
-	
-	from https://github.com/gameclosure/js.io/blob/b26156c11d9b97cc911a017033c3758d20cfcc12/packages/base.js#L143
+
+from https://github.com/gameclosure/js.io/blob/b26156c11d9b97cc911a017033c3758d20cfcc12/packages/base.js#L143
 
 .. sourcecode:: javascript
 
     sock.open("irc.freenode.org", 6667);
 
 Parameters are:
+
+.. sourcecode:: javascript
 
     sock.open(server_address, server_port, binary_protocol);
 
