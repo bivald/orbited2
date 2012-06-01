@@ -123,6 +123,7 @@
 <li><a class="reference internal" href="#listen">Listen</a><ul>
 <li><a class="reference internal" href="#interface-required">interface (required)</a></li>
 <li><a class="reference internal" href="#id1">port (required)</a></li>
+<li><a class="reference internal" href="#protocols-optional">protocols (optional)</a></li>
 <li><a class="reference internal" href="#ssl-optional">ssl (optional)</a></li>
 <li><a class="reference internal" href="#certfile-optional-required-for-ssl">certfile (optional, required for SSL)</a></li>
 <li><a class="reference internal" href="#keyfile-optional-required-for-ssl">keyfile (optional, required for SSL)</a></li>
@@ -230,7 +231,8 @@
 <p>The Listen directive specifies an interface and port where Orbited2 should listen, as well as a set of protocols it should listen for. You may have as many Listen directives as you like. An example</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">Listen</span> <span class="p">(</span>
     <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>
-    <span class="n">interface</span><span class="o">=</span><span class="s">&quot;0.0.0.0&quot;</span>
+    <span class="n">interface</span><span class="o">=</span><span class="s">&quot;0.0.0.0&quot;</span><span class="p">,</span>
+            <span class="n">protocols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;ws&#39;</span><span class="p">,</span><span class="s">&#39;csp&#39;</span><span class="p">]</span>
 <span class="p">)</span></pre></div>
 </div>
 <div class="section" id="interface-required">
@@ -240,6 +242,10 @@
 <div class="section" id="id1">
 <h3>port (required)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>An integer specifying the port that orbited2 should bind to.</p>
+</div>
+<div class="section" id="protocols-optional">
+<h3>protocols (optional)<a class="headerlink" href="#protocols-optional" title="Permalink to this headline">¶</a></h3>
+<p>A list of protocols to support for this Listen directive. Valid protocols are ws, csp and monitor. These will be mapped to /ws, /csp and /monitor respectively and decides which transportation methods the browsers can use for this directive.</p>
 </div>
 <div class="section" id="ssl-optional">
 <h3>ssl (optional)<a class="headerlink" href="#ssl-optional" title="Permalink to this headline">¶</a></h3>
