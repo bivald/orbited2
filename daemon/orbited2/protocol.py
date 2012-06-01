@@ -24,7 +24,9 @@ class OrbitedProtocol(object):
         self._sock = sock
         self._addr = addr
         self._browser_conns = {}
-        
+        self._sock._protocol = self # Reference OrbitedProtocol to CSP Session
+                                    # so that CSP Session can communicate if the CSP session timed out 
+                                    # and tell OrbitedProtocol to close the outgoing connections
         
     def run(self):
         buffer = ""
@@ -79,7 +81,11 @@ class OrbitedProtocol(object):
         frame = str(len(payload)) + ',' + payload
 #        print "SEND->Browser", repr(frame)
         self._sock.sendall(frame)
-            
+        
+    def teardown(self):
+        for conn in self._browser_conns:
+            self._browser_conns[conn].session_closed() # recursive?
+        
 class BrowserConn(object):
     
     def __init__(self, protocol, environ, rules, id):
@@ -103,7 +109,14 @@ class BrowserConn(object):
         self._state = 'closed'
         self._protocol.send_frame(self._id, FRAME_CLOSE, reason)
         
-        
+    # The CSP Session timed out/closed itself,
+    # Thus we don't need to call send_frame, but just kill the remote connection
+    def session_closed(self):
+        if self._state == 'closed':
+            return
+        self._state = 'closed'
+        self._remote_conn.close()
+            
     def send_frame(self, data):
         self._protocol.send_frame(self._id, FRAME_DATA, data)
         
@@ -181,7 +194,7 @@ class RemoteConnection(object):
 
         self._msgs = collections.deque()
         self._sendlock = eventlet.semaphore.Semaphore()
-
+        self.closed = None
 
         proto_cls = ensure_allowed_and_get_protocol_class(rules, self)
         self.proto = proto_cls(self)
@@ -406,8 +419,3 @@ class WebSocket76Protocol(WebSocket75Protocol):
         self._buf = buf[16:]
     def close(self, sock):
         sock.sendall(self.pack_message(""))
-
-class Monitoring(object):
-    def __new__(self, env, start_response):
-        start_response('200 OK', [('Content-Type', 'text/plain')])
-        return ['Hello, World!\r\n']

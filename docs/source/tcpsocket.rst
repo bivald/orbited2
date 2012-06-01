@@ -4,9 +4,6 @@ TCP Socket
 
 Orbited has two main functions: cross-browser web socket and TCP socket. TCP Socket is a bridge between the browser (javascript) and a TCP service on the other side of Orbited (this can be a STOMP service, IRC service, your own TCP service etc.). 
 
-Overview
-========
-
 .. sourcecode:: javascript
 
     var sock = new Orbited2.TCPSocket({ orbitedUri: "http://127.0.0.1:8000", forceTransport: "csp" })

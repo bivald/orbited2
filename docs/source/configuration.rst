@@ -90,7 +90,8 @@ The Listen directive specifies an interface and port where Orbited2 should liste
 
     Listen (
         port=8000,
-        interface="0.0.0.0"
+        interface="0.0.0.0",
+		protocols=['ws','csp']
     )
 
 
@@ -105,6 +106,10 @@ port (required)
 
 An integer specifying the port that orbited2 should bind to.
 
+protocols (optional)
+--------------------
+
+A list of protocols to support for this Listen directive. Valid protocols are ws, csp and monitor. These will be mapped to /ws, /csp and /monitor respectively and decides which transportation methods the browsers can use for this directive. 
 
 ssl (optional)
 ---------------

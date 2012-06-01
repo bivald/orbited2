@@ -10,6 +10,15 @@ class OrbitedServer(object):
     def __init__(self, config):
         self._config = config
         self._csp_sock = csp_eventlet.Listener()
+        
+        # Only load monitoring if requested,
+        # TODO: A more pretty way to load modules
+        for rule in self._config.rules['Listen']:
+            if 'monitor' in rule.protocols:
+                from modules.monitoring import Monitoring
+                self._monitoring = Monitoring(self,config)
+                break
+
         self._init_listen_rules()
         
     def _init_listen_rules(self): 
@@ -23,7 +32,7 @@ class OrbitedServer(object):
             if 'csp' in rule.protocols:
                 wsgi_app['/csp'] = self._csp_sock
             if 'monitor' in rule.protocols:
-                wsgi_app['/monitor'] = protocol.Monitoring
+                wsgi_app['/monitor'] = self._monitoring
             self._wsgi_apps[(rule.interface, rule.port, rule.ssl, rule.certfile, rule.keyfile)] = wsgi_app
 
 
