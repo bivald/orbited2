@@ -32,6 +32,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="orbited2 0.2.0 documentation" href="index.html" />
+        <link rel="next" title="Monitoring" href="monitoring.html" />
         <link rel="prev" title="Compilation" href="compilation.html" />
 
     </head>
@@ -77,6 +78,9 @@
             <li>Prev:
             <a href="compilation.html" title="previous chapter">Compilation</a>
             </li>
+            <li>Next:
+            <a href="monitoring.html" title="next chapter">Monitoring</a>
+            </li>
 
         <li>
             <a href="contents.html">Table of Contents</a> |
@@ -106,16 +110,17 @@
     <div id="docs-sidebar">
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">TCP Socket</a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">TCP Socket</a></li>
 </ul>
 
 
     <h4>Previous Topic</h4>
     <p>
     <a href="compilation.html" title="previous chapter">Compilation</a>
+    </p>
+    <h4>Next Topic</h4>
+    <p>
+    <a href="monitoring.html" title="next chapter">Monitoring</a>
     </p>
 
 
@@ -135,8 +140,6 @@
 <div class="section" id="tcp-socket">
 <h1>TCP Socket<a class="headerlink" href="#tcp-socket" title="Permalink to this headline">¶</a></h1>
 <p>Orbited has two main functions: cross-browser web socket and TCP socket. TCP Socket is a bridge between the browser (javascript) and a TCP service on the other side of Orbited (this can be a STOMP service, IRC service, your own TCP service etc.).</p>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">sock</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Orbited2</span><span class="p">.</span><span class="nx">TCPSocket</span><span class="p">({</span> <span class="nx">orbitedUri</span><span class="o">:</span> <span class="s2">&quot;http://127.0.0.1:8000&quot;</span><span class="p">,</span> <span class="nx">forceTransport</span><span class="o">:</span> <span class="s2">&quot;csp&quot;</span> <span class="p">})</span>
 <span class="nx">sock</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">&quot;irc.freenode.org&quot;</span><span class="p">,</span> <span class="mi">6667</span><span class="p">);</span>
 <span class="nx">sock</span><span class="p">.</span><span class="nx">onopen</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -196,7 +199,6 @@ binary_protocol: Is the data binary or text? If you plan to send binary data suc
 </div>
 <p>Closes the socket. Will trigger .onclose()</p>
 </div>
-</div>
 
     </div>
 
@@ -205,6 +207,8 @@ binary_protocol: Is the data binary or text? If you plan to send binary data suc
 <div id="docs-bottom-navigation" class="docs-navigation-links">
         Previous:
         <a href="compilation.html" title="previous chapter">Compilation</a>
+        Next:
+        <a href="monitoring.html" title="next chapter">Monitoring</a>
 
     <div id="docs-copyright">
         &copy; Copyright 2012, Michael Carter.

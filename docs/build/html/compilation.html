@@ -111,7 +111,8 @@
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Compilation</a><ul>
-<li><a class="reference internal" href="#orbited-js">Orbited.js</a></li>
+<li><a class="reference internal" href="#orbited2">Orbited2</a></li>
+<li><a class="reference internal" href="#orbited2-js">Orbited2.js</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 </ul>
 </li>
@@ -143,8 +144,12 @@
         
 <div class="section" id="compilation">
 <h1>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="orbited-js">
-<h2>Orbited.js<a class="headerlink" href="#orbited-js" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="orbited2">
+<h2>Orbited2<a class="headerlink" href="#orbited2" title="Permalink to this headline">¶</a></h2>
+<p>TODO: How to install Orbited2 from source</p>
+</div>
+<div class="section" id="orbited2-js">
+<h2>Orbited2.js<a class="headerlink" href="#orbited2-js" title="Permalink to this headline">¶</a></h2>
 <p>Curious users may wish to modify the source code and recompile Orbited2. Here&#8217;s how, courtesy of Niklas.</p>
 <ol class="arabic simple">
 <li>Check-out js.io from github (<a class="reference external" href="https://github.com/gameclosure/js.io">https://github.com/gameclosure/js.io</a>)</li>
@@ -162,7 +167,12 @@
 <ol class="arabic simple" start="4">
 <li>Compile the source (while in js_src) with:</li>
 </ol>
-<div class="highlight-none"><div class="highlight"><pre>jsio compile Orbited2.pkg -o Orbited2-new.js</pre></div>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">jsio compile Orbited2.pkg -o Orbited2-new.js</span></pre></div>
+</div>
+<p>or simply:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">make</span></pre></div>
+</div>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">make release</span></pre></div>
 </div>
 <ol class="arabic simple" start="5">
 <li>You&#8217;re done. Celebrate!</li>

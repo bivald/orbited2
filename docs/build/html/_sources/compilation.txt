@@ -2,7 +2,12 @@
 Compilation
 ===========
 
-Orbited.js
+Orbited2
+========
+
+TODO: How to install Orbited2 from source
+
+Orbited2.js
 ===========
 
 Curious users may wish to modify the source code and recompile Orbited2. Here's how, courtesy of Niklas.
@@ -23,9 +28,22 @@ Curious users may wish to modify the source code and recompile Orbited2. Here's 
 
 4. Compile the source (while in js_src) with:
 
-.. code-block:: none
+.. code-block:: console
 
     jsio compile Orbited2.pkg -o Orbited2-new.js
+
+or simply:
+
+.. code-block:: console
+
+    make
+
+.. code-block:: console
+
+    make release
+
+
+
 
 5. You're done. Celebrate!
 
