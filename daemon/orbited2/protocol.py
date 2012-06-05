@@ -16,6 +16,19 @@ FRAME_CLOSE = 1
 FRAME_DATA = 2
 CONNECT_TIMEOUT = 30
 
+CODES = {
+    'InvalidHandshake': 102,
+    'UserConnectionReset': 103,
+    'RemoteConnectionTimeout': 104,
+    'Unauthorized': 106,
+    'RemoteConnectionFailed': 108,
+    'RemoteConnectionClosed': 109,
+    'ProtocolError': 110,
+    'ReconnectStomp': 111,
+    'ResumeFailed': 190,
+    'ClosedBecauseResumedElsewhere': 191
+}
+
 class OrbitedProtocol(object):
     
     def __init__(self, server, rules, sock, addr):
@@ -121,7 +134,7 @@ class BrowserConn(object):
         self._protocol.send_frame(self._id, FRAME_DATA, data)
         
     def _connect(self, handshake):
-        err_reason = 'connection timed out'
+        err_reason = 'RemoteConnectionTimedOut'
         with eventlet.timeout.Timeout(CONNECT_TIMEOUT, False):
             try:
                 _remote_conn = RemoteConnection(self, handshake, self._environ, self._rules)
@@ -129,14 +142,11 @@ class BrowserConn(object):
                     _remote_conn.connect()
                     self._remote_conn = _remote_conn
                 except Exception, e:
-                    err_reason = "Exception: %s" % (e,)
+                    err_reason = "Remote%s" %e
                     _remote_conn.close()
             except Exception, e:
-#                raise
-                err_reason = "Exception: %s" % (e,)
-#                print 'err', err_reason
+                err_reason = "RemoteException%s" % (e,)
         if not self._remote_conn:
-            print 'err', err_reason
             self.close(err_reason)
         self.send_frame('1')
         self._state = 'open'
@@ -148,7 +158,7 @@ class BrowserConn(object):
                 handshake = json.loads(data)
             except Exception, e:
             # Protocol Error
-                self.close("Invalid handshake (malformed json)")
+                self.close("BrowserInvalidHandshake (malformed json)")
             else:
                 eventlet.spawn(self._connect, handshake)
                 self._state = 'connecting'
@@ -179,11 +189,11 @@ class RemoteConnection(object):
         self._browser_conn = browser_conn
         
         if 'hostname' not in handshake:
-            raise Exception("Invalid 'hostname' argument")
+            raise Exception("InvalidHostname")
         if 'port' not in handshake:
-            raise Exception("Invalid 'port' argument")
+            raise Exception("InvalidPort")
         if not isinstance(handshake['port'], int):
-            raise Exception("Invalid 'port' argument (must be an integer")
+            raise Exception("InvalidPort (must be integer)")
         
         
         self.hostname = handshake['hostname']
@@ -201,7 +211,11 @@ class RemoteConnection(object):
         
         
     def connect(self):
-        self.sock = eventlet.connect((self.hostname, self.port))
+        try:
+            self.sock = eventlet.connect((self.hostname, self.port))
+        except Exception, msg:
+            raise Exception( "%s (%d)" % (msg[1].capitalize(),msg[0]) )
+        
         self.closed = False
         self.proto.handshake(self.sock)
         
@@ -209,13 +223,17 @@ class RemoteConnection(object):
 
 
     def _run(self):
+        error_message = "RemoteConnectionClosed"
         while True:
-            msg = self.wait()
-            if msg is None:
+            try:
+                msg = self.wait()
+                #print 'RECV<-Server', repr(msg)
+                self._browser_conn.send_frame(msg)
+            except Exception, err:
+                error_message = "%s" % err
                 break
-#            print 'RECV<-Server', repr(msg)
-            self._browser_conn.send_frame(msg)
-        self._browser_conn.close()
+
+        self._browser_conn.close(error_message)
 
     def wait(self):
         """Waits for and deserializes messages. Returns a single
@@ -228,7 +246,7 @@ class RemoteConnection(object):
             delta = self.sock.recv(8192)
             if delta == '':
                 self.close()
-                return None
+                raise Exception("RemoteConnectionClosed")
             self.proto.recv(delta)
             msgs = self.proto.parse_messages()
             self._msgs.extend(msgs)
@@ -258,7 +276,11 @@ class RemoteConnection(object):
             self.sock.shutdown(True)
         except:
             pass
-        self.sock.close()               
+        
+        try:
+            self.sock.close()
+        except AttributeError:
+            pass               
 
 class TcpProtocol(object):
     

@@ -4,6 +4,7 @@ jsio('import std.uri as Uri');
 jsio('import std.JSON');
 jsio('import std.utf8 as utf8');
 jsio('import lib.Enum as Enum');
+jsio('import net.errors as errors');
 
 exports.logging = logging;
 exports.logger = logger;
@@ -12,6 +13,7 @@ var originalWebSocket = window.WebSocket;
 var baseUri = new Uri(window.location);
 var defaultOrbitedUri;
 var defaultBrowserLogLevel = 4;
+var sessionSupport = false;
 
 function setup() {
 	var scripts = document.getElementsByTagName('script'),
@@ -55,6 +57,7 @@ exports.TCPSocket = Class(function() {
 		this.readyState = READY_STATE.WAITING;
 		this._buffer = "";
 		this._forceTransport = opts.forceTransport;
+		this._sessionSupport = opts.sessionSupport || sessionSupport;
 		logger.setLevel( this._orbitedBrowserLogLevel )
 	}
 	
@@ -62,7 +65,8 @@ exports.TCPSocket = Class(function() {
 		if (!this._orbitedUri) {
 			throw new Error("Could not automatically determine Orbited's uri, and Orbited.TCPSocket.opts.orbitedUri was not manually specified in TCPSocket constructor");
 		}
-		var multiplexer = getMultiplexer(this._orbitedUri, this._forceTransport);
+		var multiplexer = getMultiplexer(this._orbitedUri, this._forceTransport, this);
+		
 		this._isBinary = !!isBinary;
 		this._host = host;
 		this._port = port;
@@ -70,14 +74,21 @@ exports.TCPSocket = Class(function() {
 		this._conn.onOpen = bind(this, _onOpen);
 		this._conn.onFrame = bind(this, _onFrame);
 		this._conn.onClose = bind(this, _onClose);
+		this._connectionLost = bind(this, _onConnectionLost);
 		this.readyState = READY_STATE.CONNECTING;
+		
 	}
 	
-	var _onClose = function() {
+	var _onConnectionLost = function(data) {
+		bind(this, _trigger)('close', data);
+	}
+	
+	var _onClose = function(data) {
 		if (this.readyState == READY_STATE.CLOSED) { return; }
 		this.readyState = READY_STATE.CLOSED;
+		multiplexer.connectionLost = multiplexer.onClose = function() {} // this would cause double errors
 		releaseMultiplexer();
-		bind(this, _trigger)('close');
+		bind(this, _trigger)('close',data);
 	}
 	
 	var _onOpen = function() {
@@ -94,6 +105,9 @@ exports.TCPSocket = Class(function() {
 				if (payload == '1') {
 					this.readyState = READY_STATE.OPEN;
 					bind(this, _trigger)('open');
+					if(this._sessionSupport) {
+						this._sessionKey = this._conn._multiplexer.transport._conn._sessionKey;
+					}
 				} else {
 					this._onClose();
 				}
@@ -143,7 +157,7 @@ exports.WebSocket = Class(function() {
 		this.URL = url;
 		this.readyState = READY_STATE.CONNECTING;
 		this.bufferedAmount = 0;
-		var multiplexer = getMultiplexer(exports.WebSocket.opts.orbitedUri);
+		var multiplexer = getMultiplexer(exports.WebSocket.opts.orbitedUri, this);
 		this._conn = multiplexer.openConnection();
 		this._conn.onOpen = bind(this, _onOpen);
 		this._conn.onFrame = bind(this, _onFrame);
@@ -271,12 +285,14 @@ function hasNativeWebSocket(rev) {
 var multiplexer = null;
 var count = 0;
 
-function getMultiplexer(baseUri, forceTransport) {
+function getMultiplexer(baseUri, forceTransport, socket) {
 	logger.debug('getMultiplexer', baseUri, forceTransport);
 	if (!multiplexer || multiplexer['url'] == null) {
 		multiplexer = new OrbitedMultiplexingProtocol(baseUri);
-		multiplexer.onClose = function() {
+		multiplexer._socket = socket; // we need a reference to the socket (i.e TCPSocket) to be able to send connectionlost events
+		multiplexer.onClose = function(reason) {
 			multiplexer = null;
+			this._socket._connectionLost(reason)
 		}
 		// TODO: Choose transport
 		var _transport = forceTransport;
@@ -405,7 +421,9 @@ var OrbitedMultiplexingProtocol = Class(BufferedProtocol, function(supr) {
 	}
 	
 	//callback 
-	this.onClose = function() { }
+	this.onClose = function() { 
+		
+	}
 
 	this._connectionLost = function(transportName, reason, wasConnected) {
 		if (!wasConnected) {
@@ -413,9 +431,11 @@ var OrbitedMultiplexingProtocol = Class(BufferedProtocol, function(supr) {
 				net.connect(this, 'csp', {url: this._baseUri + 'csp' });
 				this.connectionLost = bind(this, '_connectionLost', 'csp');
 				this.mode = 'csp';
+			}else{
+				this.onClose(transportName);
 			}
 		} else {
-			this.onClose();
+			this.onClose(transportName);
 		}
 	}
 
@@ -438,7 +458,7 @@ var OrbitedMultiplexingProtocol = Class(BufferedProtocol, function(supr) {
 				break;
 			case FRAME.CLOSE:
 				delete this._connections[id];
-				conn.onClose();
+				conn.onClose(data);
 				break;
 			case FRAME.DATA:
 				conn.onFrame(data);
