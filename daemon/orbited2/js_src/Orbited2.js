@@ -3,6 +3,7 @@ jsio('import net');
 jsio('import std.uri as Uri');
 jsio('import std.JSON');
 jsio('import std.utf8 as utf8');
+jsio('import std.utf16 as utf16')
 jsio('import lib.Enum as Enum');
 jsio('import net.errors as errors');
 
@@ -12,7 +13,7 @@ exports.logger = logger;
 var originalWebSocket = window.WebSocket;
 var baseUri = new Uri(window.location);
 var defaultOrbitedUri;
-var defaultBrowserLogLevel = 4;
+var defaultBrowserLogLevel = 1;
 var sessionSupport = false;
 
 function setup() {
@@ -114,7 +115,11 @@ exports.TCPSocket = Class(function() {
 				break;
 			case READY_STATE.OPEN:
 				this._buffer += payload;
-				var result = utf8.decode(this._buffer);
+				try{
+					var result = utf8.decode(this._buffer);
+				}catch(e) {
+					var result = [this._buffer,this._buffer.length];
+				}
 				payload= result[0];
 				this._buffer = this._buffer.slice(result[1]);
 				if (payload.length) {
