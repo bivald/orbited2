@@ -56,8 +56,10 @@ class OrbitedProtocol(object):
                     if DELIMETER not in buffer: break
                     length, buffer = buffer.split(DELIMETER,1)
                     length = int(length)
-                if len(buffer) < length:
+                    
+                if len(buffer) < length-1: # Problem with new JS.IO? 
                     break
+
                 payload = buffer[:length]
                 buffer = buffer[length:]
                 length = -1
@@ -65,6 +67,7 @@ class OrbitedProtocol(object):
             
             
     def _dispatch_payload(self, payload):
+
         try:
             id, frame_type, data = payload.split(DELIMETER, 2)
             frame_type = int(frame_type)
@@ -92,12 +95,22 @@ class OrbitedProtocol(object):
             data = data.encode('utf-8', 'replace')
         payload = str(id) + ',' + str(frame_type) + ',' + data
         frame = str(len(payload)) + ',' + payload
-#        print "SEND->Browser", repr(frame)
+        #print "SEND->Browser", repr(frame)
         self._sock.sendall(frame)
         
     def teardown(self):
-        for conn in self._browser_conns:
+        #print "Removing OrbitedProtocol"
+        
+        for conn in self._browser_conns.keys():
+            #print "killing BrowserConn"
             self._browser_conns[conn].session_closed() # recursive?
+            del self._browser_conns[conn]
+        
+        del self._rules
+        del self._server
+        del self._sock
+        del self._addr
+        del self._browser_conns
         
 class BrowserConn(object):
     
@@ -129,6 +142,13 @@ class BrowserConn(object):
             return
         self._state = 'closed'
         self._remote_conn.close()
+        
+        del self._protocol
+        del self._environ
+        del self._rules
+        del self._id
+        del self._state
+        del self._remote_conn
             
     def send_frame(self, data):
         self._protocol.send_frame(self._id, FRAME_DATA, data)
@@ -164,6 +184,7 @@ class BrowserConn(object):
                 self._state = 'connecting'
                 
         elif self._state == 'open':
+
             self._remote_conn.send(data)
         else:
             # Protocol Error
@@ -230,6 +251,7 @@ class RemoteConnection(object):
                 #print 'RECV<-Server', repr(msg)
                 self._browser_conn.send_frame(msg)
             except Exception, err:
+                #print "killing remoteconn"
                 error_message = "%s" % err
                 break
 
@@ -254,7 +276,7 @@ class RemoteConnection(object):
         
     def send(self, msg):
         msg = self.proto.pack_message(msg)
-#        print 'SEND->SERVER', repr(msg)
+        #print 'SEND->SERVER', repr(msg)
         self._sendlock.acquire()
         try:
             self.sock.sendall(msg)

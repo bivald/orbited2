@@ -66,6 +66,11 @@ class OrbitedServer(object):
         p = protocol.OrbitedProtocol(self, self._config.rules['RemoteDestination'], sock, addr)
         p.run()
         
+        print "Removing orbitedprotocol"
+        del sock
+        del addr
+        del p
+        
     def _wsgi_websocket(self, ws):
         self._accepted(SockWebSocketWrapper(ws))
 

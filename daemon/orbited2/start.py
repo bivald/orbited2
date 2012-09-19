@@ -3,7 +3,6 @@ import config
 import sys
 import logging
 
-
 def main():
     logging.basicConfig()
     c = config.OrbitedConfig(sys.argv)
