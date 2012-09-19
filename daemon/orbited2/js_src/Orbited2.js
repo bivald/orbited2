@@ -3,7 +3,6 @@ jsio('import net');
 jsio('import std.uri as Uri');
 jsio('import std.JSON');
 jsio('import std.utf8 as utf8');
-jsio('import std.utf16 as utf16')
 jsio('import lib.Enum as Enum');
 jsio('import net.errors as errors');
 
